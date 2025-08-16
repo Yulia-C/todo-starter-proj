@@ -6,7 +6,7 @@ import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 import { loadTodos } from "../store/actions/todos.actions.js"
 import { getTruthyValues } from "../services/util.service.js"
 
-const { useState, useEffect } = React
+const { Fragment, useState, useEffect } = React
 const { useSelector, useDispatch } = ReactRedux
 
 const { Link, useSearchParams } = ReactRouterDOM
@@ -14,18 +14,20 @@ const { Link, useSearchParams } = ReactRouterDOM
 export function TodoIndex() {
 
     const todos = useSelector(state => state.todos)
+    const isLoading = useSelector(state => state.isLoading)
+
     const [searchParams, setSearchParams] = useSearchParams()
 
     const defaultFilter = todoService.getFilterFromSearchParams(searchParams)
 
     const [filterBy, setFilterBy] = useState(defaultFilter)
-    
+
     useEffect(() => {
         setSearchParams(getTruthyValues(filterBy))
 
         loadTodos()
             .catch(err => {
-                console.eror('err:', err)
+                console.log('err:', err)
                 showErrorMsg('Cannot load todos')
             })
     }, [filterBy])
@@ -55,7 +57,8 @@ export function TodoIndex() {
             })
     }
 
-    if (!todos) return <div>Loading...</div>
+    if (!todos) return <div className="loader"></div>
+
     return (
         <section className="todo-index">
             <TodoFilter filterBy={filterBy} onSetFilterBy={setFilterBy} />
@@ -63,12 +66,16 @@ export function TodoIndex() {
                 <Link to="/todo/edit" className="btn" >Add Todo</Link>
             </div>
             <h2>Todos List</h2>
-            <TodoList todos={todos} onRemoveTodo={onRemoveTodo} onToggleTodo={onToggleTodo} />
-            <hr />
-            <h2>Todos Table</h2>
-            <div style={{ width: '60%', margin: 'auto' }}>
-                <DataTable todos={todos} onRemoveTodo={onRemoveTodo} />
-            </div>
+            {isLoading ? <div className="loader"></div> :
+                <Fragment>
+                    <TodoList todos={todos} onRemoveTodo={onRemoveTodo} onToggleTodo={onToggleTodo} />
+                    <hr />
+                    <h2>Todos Table</h2>
+                    <div style={{ width: '60%', margin: 'auto' }}>
+                        <DataTable todos={todos} onRemoveTodo={onRemoveTodo} />
+                    </div>
+                </Fragment>
+            }
         </section>
     )
 }
