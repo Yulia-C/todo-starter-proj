@@ -1,6 +1,6 @@
 
 import { todoService } from "../../services/todo.service.js"
-import { HIDE_LOADER, SET_FILTER, SET_TODOS, SHOW_LOADER, store } from "../store.js"
+import { ADD_TODO, HIDE_LOADER, REMOVE_TODO, SET_FILTER, SET_TODOS, SHOW_LOADER, store, UPDATE_TODO } from "../store.js"
 
 export function loadTodos(filterBy) {
     
@@ -18,3 +18,14 @@ export function loadTodos(filterBy) {
         })
 }
 
+export function removeTodo(todoId) {
+    return todoService.remove(todoId)
+        .then(() => store.dispatch({ type: REMOVE_TODO, todoId }))
+}
+
+export function saveTodo(todoToSave) {
+    const type = todoToSave._id ? UPDATE_TODO : ADD_TODO
+
+    return todoService.save(todoToSave)
+        .then(savedTodo => store.dispatch({ type, todo: savedTodo }))
+}

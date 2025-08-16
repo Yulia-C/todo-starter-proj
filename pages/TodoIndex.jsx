@@ -3,7 +3,7 @@ import { TodoList } from "../cmps/TodoList.jsx"
 import { DataTable } from "../cmps/data-table/DataTable.jsx"
 import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
-import { loadTodos } from "../store/actions/todos.actions.js"
+import { loadTodos, removeTodo, saveTodo } from "../store/actions/todos.actions.js"
 import { getTruthyValues } from "../services/util.service.js"
 import { SET_FILTER, store, SET_TODOS } from "../store/store.js"
 
@@ -34,7 +34,7 @@ export function TodoIndex() {
     function onRemoveTodo(todoId) {
         const confirm = prompt('Are you sure?')
         if (!confirm) return
-        todoService.remove(todoId)
+        removeTodo(todoId)
             .then(() => {
                 const updatedTodos = todos.filter(todo => todo._id !== todoId)
                 store.dispatch({ type: SET_TODOS, todos: updatedTodos })
@@ -49,14 +49,13 @@ export function TodoIndex() {
 
     function onToggleTodo(todo) {
         const todoToSave = { ...todo, isDone: !todo.isDone }
-        todoService.save(todoToSave)
-            .then((savedTodo) => {
-                setTodos(prevTodos => prevTodos.map(currTodo => (currTodo._id !== todo._id) ? currTodo : { ...savedTodo }))
+        saveTodo(todoToSave)
+            .then(({ todo: savedTodo }) => {
                 showSuccessMsg(`Todo is ${(savedTodo.isDone) ? 'done' : 'back on your list'}`)
             })
             .catch(err => {
                 console.log('err:', err)
-                showErrorMsg('Cannot toggle todo ' + todoId)
+                showErrorMsg('Cannot toggle todo ' + todoToSave._id)
             })
     }
 
