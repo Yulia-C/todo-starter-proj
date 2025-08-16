@@ -5,7 +5,7 @@ import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 import { loadTodos } from "../store/actions/todos.actions.js"
 import { getTruthyValues } from "../services/util.service.js"
-import { SET_FILTER, store } from "../store/store.js"
+import { SET_FILTER, store, SET_TODOS } from "../store/store.js"
 
 const { Fragment, useState, useEffect } = React
 const { useSelector, useDispatch } = ReactRedux
@@ -32,11 +32,15 @@ export function TodoIndex() {
     }, [filterBy])
 
     function onRemoveTodo(todoId) {
+        const confirm = prompt('Are you sure?')
+        if (!confirm) return
         todoService.remove(todoId)
             .then(() => {
-                setTodos(prevTodos => prevTodos.filter(todo => todo._id !== todoId))
+                const updatedTodos = todos.filter(todo => todo._id !== todoId)
+                store.dispatch({ type: SET_TODOS, todos: updatedTodos })
                 showSuccessMsg(`Todo removed`)
             })
+
             .catch(err => {
                 console.log('err:', err)
                 showErrorMsg('Cannot remove todo ' + todoId)
