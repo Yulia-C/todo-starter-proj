@@ -58,3 +58,14 @@ function animateCSS(el, animation='bounce') {
         el.addEventListener('animationend', handleAnimationEnd, { once: true })
     })
 }
+
+export function getTruthyValues(obj) {
+    const newObj = {}
+    for (const key in obj) {
+        const value = obj[key]
+        if (value) {
+            newObj[key] = value
+        }
+    }
+    return newObj
+}
