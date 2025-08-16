@@ -69,3 +69,13 @@ export function getTruthyValues(obj) {
     }
     return newObj
 }
+
+export function debounce(func, wait) {
+    let timeoutId
+    return (...args) => {
+        clearTimeout(timeoutId)
+        timeoutId = setTimeout(() => {
+            func(...args)
+        }, wait)
+    }
+}

@@ -1,12 +1,15 @@
-const { useState, useEffect } = React
+import { debounce } from "../services/util.service.js"
+
+const { useState, useEffect, useRef } = React
 
 export function TodoFilter({ filterBy, onSetFilterBy }) {
 
-    const [filterByToEdit, setFilterByToEdit] = useState({...filterBy})
+    const [filterByToEdit, setFilterByToEdit] = useState({ ...filterBy })
+    const onSetFilterDebounce = useRef(debounce(onSetFilterBy, 500)).current
+
 
     useEffect(() => {
-        // Notify parent
-        onSetFilterBy(filterByToEdit)
+        onSetFilterDebounce(filterByToEdit)
     }, [filterByToEdit])
 
     function handleChange({ target }) {
@@ -39,12 +42,12 @@ export function TodoFilter({ filterBy, onSetFilterBy }) {
     return (
         <section className="todo-filter">
             <h2>Filter Todos</h2>
-            <form onSubmit={onSubmitFilter}>
-                <input value={txt} onChange={handleChange}
+            <form  onSubmit={onSubmitFilter}>
+                <input value={txt || ''} onChange={handleChange}
                     type="search" placeholder="By Txt" id="txt" name="txt"
                 />
                 <label htmlFor="importance">Importance: </label>
-                <input value={importance} onChange={handleChange}
+                <input value={+importance || 0} onChange={handleChange}
                     type="number" placeholder="By Importance" id="importance" name="importance"
                 />
 

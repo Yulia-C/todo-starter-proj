@@ -5,6 +5,7 @@ import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 import { loadTodos } from "../store/actions/todos.actions.js"
 import { getTruthyValues } from "../services/util.service.js"
+import { SET_FILTER, store } from "../store/store.js"
 
 const { Fragment, useState, useEffect } = React
 const { useSelector, useDispatch } = ReactRedux
@@ -15,21 +16,19 @@ export function TodoIndex() {
 
     const todos = useSelector(state => state.todos)
     const isLoading = useSelector(state => state.isLoading)
+    const filterBy = useSelector(state => state.filterBy)
 
     const [searchParams, setSearchParams] = useSearchParams()
-
-    const defaultFilter = todoService.getFilterFromSearchParams(searchParams)
-
-    const [filterBy, setFilterBy] = useState(defaultFilter)
 
     useEffect(() => {
         setSearchParams(getTruthyValues(filterBy))
 
-        loadTodos()
+        loadTodos(filterBy)
             .catch(err => {
                 console.log('err:', err)
                 showErrorMsg('Cannot load todos')
             })
+
     }, [filterBy])
 
     function onRemoveTodo(todoId) {
@@ -61,7 +60,7 @@ export function TodoIndex() {
 
     return (
         <section className="todo-index">
-            <TodoFilter filterBy={filterBy} onSetFilterBy={setFilterBy} />
+            <TodoFilter filterBy={filterBy} onSetFilterBy={(updatedFilter) => { store.dispatch({ type: SET_FILTER, filterBy: updatedFilter }) }} />
             <div>
                 <Link to="/todo/edit" className="btn" >Add Todo</Link>
             </div>
