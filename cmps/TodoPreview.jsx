@@ -1,11 +1,11 @@
 export function TodoPreview({ todo, onToggleTodo }) {
     return (
         <article className="todo-preview">
-            <h2 className={(todo.isDone)? 'done' : ''} onClick={onToggleTodo}>
+            <h2 className={`todo-h2 ${todo.isDone ? 'done' : ''}`} onClick={onToggleTodo}>
                 Todo: {todo.txt}
             </h2>
             <h4>Todo Importance: {todo.importance}</h4>
-                <img src={`https://robohash.org/${todo._id}`} style={{ maxWidth: '100px' }} />
-        </article>
+            <img src={`https://robohash.org/${todo._id}`} style={{ maxWidth: '100px' }} />
+        </article >
     )
 }

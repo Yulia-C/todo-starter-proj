@@ -14,3 +14,7 @@
 .todo-preview img {
     max-width: 100px;
 }
+
+.todo-h2 {
+    cursor: pointer;
+}

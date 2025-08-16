@@ -79,3 +79,18 @@ export function debounce(func, wait) {
         }, wait)
     }
 }
+
+export function formatTimestamp(timestamp) {
+  const date = new Date(timestamp)
+
+  const options = {
+    year: 'numeric',
+    month: 'short',     // e.g., Jan, Feb
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false       // use true for AM/PM
+  }
+
+  return date.toLocaleString('en-US', options)
+}
