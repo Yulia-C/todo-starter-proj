@@ -8,7 +8,6 @@ export function LoginSignup() {
 
     const [isSignup, setIsSignUp] = useState(false)
     const [credentials, setCredentials] = useState(userService.getEmptyCredentials())
-  
     const loggedinUser = useSelector(state => state.loggedinUser)
 
     function handleChange({ target }) {
@@ -26,7 +25,16 @@ export function LoginSignup() {
 
 
     function onLogin(credentials) {
-        isSignup ? signup(credentials) : login(credentials)
+        if (isSignup) {
+            signup(credentials)
+                .then(() => showSuccessMsg('Signed in successfully'))
+                .catch(err=> showErrorMsg("Had problem signing in"))
+        } else {
+
+            login(credentials)
+                .then(() => showSuccessMsg('Logged in successfully'))
+                .catch(err=> showErrorMsg("Had problem logging in"))
+        }
     }
 
 

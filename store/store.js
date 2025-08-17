@@ -10,6 +10,7 @@ export const HIDE_LOADER = 'HIDE_LOADER'
 export const SET_FILTER = 'SET_FILTER'
 
 export const SET_USER = 'SET_USER'
+export const SET_USER_BALANCE = 'SET_USER_BALANCE'
 
 const initialState = {
     todos: [],
@@ -38,6 +39,9 @@ export function appReducer(state = initialState, cmd = {}) {
 
         case SET_USER:
             return { ...state, loggedinUser: cmd.loggedinUser }
+
+        case SET_USER_BALANCE:
+            return { ...state, loggedinUser: { ...state.loggedinUser, balance: cmd.balance } }
 
         case REMOVE_TODO:
             var todos = state.todos.filter(todo => todo._id !== cmd.todoId)

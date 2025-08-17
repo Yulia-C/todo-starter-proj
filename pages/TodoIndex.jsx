@@ -6,6 +6,7 @@ import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 import { loadTodos, removeTodo, saveTodo } from "../store/actions/todos.actions.js"
 import { getTruthyValues } from "../services/util.service.js"
 import { SET_FILTER, store, SET_TODOS } from "../store/store.js"
+import { updateBalance } from "../store/actions/user.actions.js"
 
 const { Fragment, useState, useEffect } = React
 const { useSelector, useDispatch } = ReactRedux
@@ -51,6 +52,7 @@ export function TodoIndex() {
         const todoToSave = { ...todo, isDone: !todo.isDone }
         saveTodo(todoToSave)
             .then(({ todo: savedTodo }) => {
+                savedTodo.isDone ? updateBalance(10) : updateBalance(0)
                 showSuccessMsg(`Todo is ${(savedTodo.isDone) ? 'done' : 'back on your list'}`)
             })
             .catch(err => {

@@ -6,7 +6,7 @@ const { useEffect, useState } = React
 import { userService } from '../services/user.service.js'
 import { UserMsg } from "./UserMsg.jsx"
 import { LoginSignup } from './LoginSignup.jsx'
-import { showErrorMsg } from '../services/event-bus.service.js'
+import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service.js'
 import { logout } from '../store/actions/user.actions.js'
 import { todoService } from '../services/todo.service.js'
 import { ProgressChart } from './ProgressChart.jsx'
@@ -20,19 +20,20 @@ export function AppHeader() {
 
     useEffect(() => {
         todoService.query()
-        .then(() => { })
+            .then(() => { })
         todoService.getProgressStats()
-        .then(setProgressStats)
-    }, [loggedinUser])
+            .then(setProgressStats)
+
+    }, [loggedinUser, progressStats])
 
 
     function onLogout() {
         logout()
+            .then(() => showSuccessMsg('Logged out'))
             .catch(err => {
                 showErrorMsg('OOPs try again')
             })
     }
-
 
     return (
         <header className="app-header full main-layout">
@@ -44,16 +45,16 @@ export function AppHeader() {
                     <NavLink to="/todo" >Todos</NavLink>
                     <NavLink to="/dashboard" >Dashboard</NavLink>
                     <ProgressChart data={progressStats} />
-                {loggedinUser ? (
-                    < section >
-                        <Link to={`/user/${loggedinUser._id}`}>Hello {loggedinUser.fullname}</Link>
-                        <button onClick={onLogout}>Logout</button>
-                    </ section >
-                ) : (
-                    <section>
-                        <LoginSignup />
-                    </section>
-                )}
+                    {loggedinUser ? (
+                        < section >
+                            <Link to={`/user/${loggedinUser._id}`}>Hello {loggedinUser.fullname} <span className="balance">${loggedinUser.balance}</span></Link>
+                            <button onClick={onLogout}>Logout</button>
+                        </ section >
+                    ) : (
+                        <section>
+                            <LoginSignup />
+                        </section>
+                    )}
                 </nav>
             </section>
             <UserMsg />

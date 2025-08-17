@@ -61,7 +61,7 @@ function save(todo) {
     }
 }
 
-function getEmptyTodo(txt = '', importance = 5, isDone = '') {
+function getEmptyTodo(txt = '', importance = 5, isDone = false) {
     return { txt, importance, isDone }
 }
 
@@ -87,6 +87,7 @@ function getImportanceStats() {
             return data
         })
 }
+
 function getProgressStats() {
     return storageService.query(TODO_KEY)
         .then(todos => {
