@@ -13,6 +13,7 @@ export const todoService = {
     getDefaultFilter,
     getFilterFromSearchParams,
     getImportanceStats,
+    getProgressStats,
 }
 // For Debug (easy access from console):
 window.cs = todoService
@@ -85,7 +86,14 @@ function getImportanceStats() {
             const data = Object.keys(todoCountByImportanceMap).map(speedName => ({ title: speedName, value: todoCountByImportanceMap[speedName] }))
             return data
         })
-
+}
+function getProgressStats() {
+    return storageService.query(TODO_KEY)
+        .then(todos => {
+            const todoProgressMap = getTodoProgressMap(todos)
+            const data = Object.keys(todoProgressMap).map(progress => ({ title: progress, value: todoProgressMap[progress] }))
+            return data
+        })
 }
 
 function _createTodos() {
@@ -128,6 +136,20 @@ function _getTodoCountByImportanceMap(todos) {
     }, { low: 0, normal: 0, urgent: 0 })
     return todoCountByImportanceMap
 }
+
+function getTodoProgressMap(todos) {
+    const map = todos.reduce((acc, todo) => {
+        if (todo.isDone) acc.done++
+        else if (todo.isDone === false) acc.inProgress++
+
+        return acc
+    }, { done: 0, inProgress: 0 })
+
+    const totalProgress = map.done + map.inProgress
+    map.progress = totalProgress ? Math.round((map.done / totalProgress) * 100) : 0
+    return map
+}
+
 
 
 // Data Model:

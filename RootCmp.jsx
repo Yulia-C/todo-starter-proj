@@ -11,10 +11,16 @@ import { TodoEdit } from "./pages/TodoEdit.jsx"
 import { AboutTeam } from "./cmps/AboutTeam.jsx"
 import { AboutVision } from "./cmps/AboutVision.jsx"
 import { Dashboard } from "./pages/Dashboard.jsx"
-import { store } from "./store/store.js"
+import { store, SET_USER } from "./store/store.js"
 import { UserPage } from "./pages/UserPage.jsx"
+import { userService } from "./services/user.service.js"
+
 
 export function RootCmp() {
+    const user = userService.getLoggedinUser()
+    if (user) {
+        store.dispatch({ type: SET_USER, loggedinUser: user })
+    }
 
     return (<Provider store={store}>
 

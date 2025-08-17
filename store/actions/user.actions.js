@@ -3,7 +3,10 @@ import { SET_USER, store } from "../store.js"
 
 export function login(user) {
     return userService.login(user)
-        .then(loggedinUser => store.dispatch({ type: SET_USER, loggedinUser }))
+        .then(loggedinUser => {
+            store.dispatch({ type: SET_USER, loggedinUser })
+            return loggedinUser
+        })
         .catch(err => {
             console.log('err:', err)
             throw err

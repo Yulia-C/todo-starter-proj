@@ -1,18 +1,23 @@
 import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service.js'
 import { userService } from '../services/user.service.js'
-import { login,signup } from '../store/actions/user.actions.js'
-
-const { useState } = React
+import { login, signup } from '../store/actions/user.actions.js'
+const { useSelector } = ReactRedux
+const { useState, useEffect } = React
 
 export function LoginSignup() {
 
     const [isSignup, setIsSignUp] = useState(false)
     const [credentials, setCredentials] = useState(userService.getEmptyCredentials())
+  
+    const loggedinUser = useSelector(state => state.loggedinUser)
 
     function handleChange({ target }) {
         const { name: field, value } = target
         setCredentials(prevCreds => ({ ...prevCreds, [field]: value }))
     }
+    useEffect(() => {
+
+    }, [loggedinUser])
 
     function handleSubmit(ev) {
         ev.preventDefault()
