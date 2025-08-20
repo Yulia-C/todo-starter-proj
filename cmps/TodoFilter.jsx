@@ -7,7 +7,7 @@ export function TodoFilter({ filterBy, onSetFilterBy }) {
     const [filterByToEdit, setFilterByToEdit] = useState({ ...filterBy })
     const onSetFilterDebounce = useRef(debounce(onSetFilterBy, 500)).current
 
-
+    // put a hook to check if it is a first render to prevent react to render twice
     useEffect(() => {
         onSetFilterDebounce(filterByToEdit)
     }, [filterByToEdit])
@@ -33,7 +33,6 @@ export function TodoFilter({ filterBy, onSetFilterBy }) {
                     else if (value === 'false') value = false
                     else value = ''
                 }
-
         }
 
         setFilterByToEdit(prevFilter => ({ ...prevFilter, [field]: value }))
@@ -61,7 +60,7 @@ export function TodoFilter({ filterBy, onSetFilterBy }) {
 
                     <label htmlFor="isDone-all">All
                         <input value='' id="isDone-all" type="radio" onChange={handleChange} name="isDone"
-                            checked={ filterByToEdit.isDone === ''} />
+                            checked={filterByToEdit.isDone === ''} />
                     </label>
                     <label htmlFor="isDone-true">Done
                         <input value="true" id="isDone-true" type="radio" onChange={handleChange} name="isDone"

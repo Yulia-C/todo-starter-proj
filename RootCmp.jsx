@@ -14,6 +14,7 @@ import { Dashboard } from "./pages/Dashboard.jsx"
 import { store, SET_USER } from "./store/store.js"
 import { UserPage } from "./pages/UserPage.jsx"
 import { userService } from "./services/user.service.js"
+import { AppFooter } from "./cmps/AppFooter.jsx"
 
 
 export function RootCmp() {
@@ -29,7 +30,7 @@ export function RootCmp() {
                 <AppHeader />
                 <main>
                     <Routes>
-                        <Route path="/" element={<Home />} />
+                        {/* <Route path="/" element={<Home />} /> */}
                         <Route path="/about" element={<About />}>
                             <Route path="team" element={<AboutTeam />} />
                             <Route path="vision" element={<AboutVision />} />
@@ -43,6 +44,7 @@ export function RootCmp() {
 
                     </Routes>
                 </main>
+                <AppFooter />
             </section>
         </Router>
     </Provider>

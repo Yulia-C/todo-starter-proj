@@ -3,6 +3,7 @@ const { useParams, useNavigate, Link } = ReactRouterDOM
 
 import { showSuccessMsg, showErrorMsg } from "../services/event-bus.service.js"
 import { userService } from "../services/user.service.js"
+import { updateUserDetails } from "../store/actions/user.actions.js"
 
 export function UserPage() {
 
@@ -23,15 +24,51 @@ export function UserPage() {
                 navigate('/')
             })
     }
+    function handleChange({ target }) {
+        const field = target.name
+        let value = target.value
+
+        switch (target.type) {
+            case 'number':
+            case 'range':
+                value = +value || ''
+                break
+
+            case 'checkbox':
+                value = target.checked
+                break
+
+            default:
+                break
+        }
+
+        setUser(prevDetails => ({ ...prevDetails, [field]: value }))
+    }
+
+    function onSaveUser(ev) {
+        ev.preventDefault()
+        updateUserDetails()
+            .then(({ updated: updatesUser }) => {
+                navigate('/todo')
+                showSuccessMsg(`Todo Saved (id: ${updatedUser._id})`)
+            })
+            .catch(err => {
+                showErrorMsg('Cannot save todo')
+                console.log('err:', err)
+            })
+    }
 
     if (!user) return <div>Loading...</div>
 
     return <section className="user-details">
-        <h1>Full Name {user.fullname}</h1>
         <pre>
             <h2>Username: {user.username}</h2>
             <h2>User Id: {user._id}</h2>
         </pre>
+        <h1>Full Name {user.fullname}</h1>
+        <form onSubmit={onSaveUser}>
+            <input type='text' value={user.fullname} name="fullname" onChange={handleChange} />
+        </form>
         <Link to="/todo">Back</Link>
     </section>
 }

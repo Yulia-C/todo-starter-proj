@@ -9,7 +9,8 @@ export const userService = {
     getById,
     query,
     getEmptyCredentials,
-    updateBalance
+    updateBalance,
+    updateUserPrefs
 }
 const STORAGE_KEY_LOGGEDIN = 'user'
 const STORAGE_KEY = 'userDB'
@@ -31,8 +32,8 @@ function login({ username, password }) {
         })
 }
 
-function signup({ username, password, fullname, balance, activities }) {
-    const user = { username, password, fullname, balance, activities }
+function signup({ username, password, fullname, balance }) {
+    const user = { username, password, fullname, balance }
     user.createdAt = user.updatedAt = Date.now()
 
     return storageService.post(STORAGE_KEY, user)
@@ -62,7 +63,6 @@ function getEmptyCredentials() {
         username: 'muki',
         password: '123',
         balance: 10000,
-        activities: [{ txt: 'Added a Todo', at: Date.now() || null }]
     }
 }
 
@@ -79,6 +79,17 @@ function updateBalance(diff) {
         })
 }
 
+function updateUserPrefs(updatedUser) {
+    return userService.getById(userService.getLoggedinUser()._id)
+        .then(user => {
+            user = { ...user, ...updatedUser }
+            return storageService.put(STORAGE_KEY, updatedUser)
+                .then((updatedUser) => {
+                    _setLoggedinUser(updatedUser)
+                    return updatedUser
+                })
+        })
+}
 // signup({username: 'muki', password: 'muki1', fullname: 'Muki Ja'})
 // login({username: 'muki', password: 'muki1'})
 

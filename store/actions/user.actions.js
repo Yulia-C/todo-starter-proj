@@ -1,5 +1,5 @@
 import { userService } from "../../services/user.service.js"
-import { SET_USER, SET_USER_BALANCE, store } from "../store.js"
+import { SET_USER, SET_USER_BALANCE, store, UPDATE_USER } from "../store.js"
 
 export function login(user) {
     return userService.login(user)
@@ -34,4 +34,9 @@ export function logout() {
 export function updateBalance(amount) {
     return userService.updateBalance(+amount)
         .then(updatedBalance => store.dispatch({ type: SET_USER_BALANCE, balance: updateBalance }))
+}
+
+export function updateUserDetails(updatedUser) {
+    userService.updateUserPrefs(updatedUser)
+        .then((updatedUser) => store.dispatch({ type: UPDATE_USER, update: updatedUser }))
 }

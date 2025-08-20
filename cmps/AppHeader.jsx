@@ -1,4 +1,4 @@
-const { useSelector } = ReactRedux
+const { useSelector, useDispatch } = ReactRedux
 const { Link, NavLink } = ReactRouterDOM
 const { useNavigate } = ReactRouter
 const { useEffect, useState } = React
@@ -9,22 +9,21 @@ import { LoginSignup } from './LoginSignup.jsx'
 import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service.js'
 import { logout } from '../store/actions/user.actions.js'
 import { todoService } from '../services/todo.service.js'
-import { ProgressChart } from './ProgressChart.jsx'
+import { setProgressStats } from '../store/actions/todos.actions.js'
 
 
 export function AppHeader() {
 
     const loggedinUser = useSelector(state => state.loggedinUser)
     const todos = useSelector(state => state.todos)
-    const [progressStats, setProgressStats] = useState([])
+    const progressStats = useSelector(state => state.progressStats)
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        todoService.query()
-            .then(() => { })
-        todoService.getProgressStats()
-            .then(setProgressStats)
-
-    }, [loggedinUser, progressStats])
+        if (loggedinUser) {
+            setProgressStats()
+        }
+    }, [loggedinUser])
 
 
     function onLogout() {
@@ -35,16 +34,28 @@ export function AppHeader() {
             })
     }
 
+        // const formattedPercent = todos ? progressStats.toFixed(2) + '%' : null
+
     return (
         <header className="app-header full main-layout">
             <section className="header-container">
                 <h1>React Todo App</h1>
                 <nav className="app-nav">
-                    <NavLink to="/" >Home</NavLink>
+                    {/* <NavLink to="/" >Home</NavLink> */}
+                    {loggedinUser && (< section className="container">
+                        <h4>Done Progress: {progressStats.value + '%'}
+                        </h4>
+                        <div className="progress-bar-container" >
+                            <span>{progressStats.value + '%'}</span >
+                            <div style={{ width: progressStats.value + 'px' }}>
+
+                            </div>
+                        </div>
+                    </section >)}
+
                     <NavLink to="/about" >About</NavLink>
                     <NavLink to="/todo" >Todos</NavLink>
                     <NavLink to="/dashboard" >Dashboard</NavLink>
-                    <ProgressChart data={progressStats} />
                     {loggedinUser ? (
                         < section >
                             <Link to={`/user/${loggedinUser._id}`}>Hello {loggedinUser.fullname} <span className="balance">${loggedinUser.balance}</span></Link>
@@ -56,8 +67,8 @@ export function AppHeader() {
                         </section>
                     )}
                 </nav>
-            </section>
+            </section >
             <UserMsg />
-        </header>
+        </header >
     )
 }
